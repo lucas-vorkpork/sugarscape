@@ -17,7 +17,7 @@ import sys
 import getopt
 import re
 import json
-from logparse import parseLog
+from logparseAvg import parseLog
 
 popDescriptors = ("meanPopulation", "meanMetabolism", "meanVision", 
                   "meanWealth", "giniCoefficient", "tradeVolume", 
