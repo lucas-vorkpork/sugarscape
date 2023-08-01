@@ -82,16 +82,22 @@ def calcBoxAndWhisker(sortedData):
     return outputData
 
 def logData(outputData, path, desc):
+    gnuBoxOffset = 1
     with open(path, 'w') as file:
+        file.write("#Descritpor: {}\n".format(desc))
+        file.write("Format: name x-offset Q0 Q1 Q2 Q3 Q4 Q5\n\n")
         for model in outputData.keys():
             for descriptor in dataList[model].keys():
                 if descriptor == desc:
-                    file.write("#{} {}\n".format(model, descriptor))
-                    file.write("{} {} {} {} {}\n".format(outputData[model][descriptor]["Q0"],
+                    file.write("{} {} {} {} {} {} {}\n".format(
+                                                    model,
+                                                    gnuBoxOffset,
+                                                    outputData[model][descriptor]["Q0"],
                                                     outputData[model][descriptor]["Q1"],
                                                     outputData[model][descriptor]["Q2"],
                                                     outputData[model][descriptor]["Q3"],
-                                                    outputData[model][descriptor]["Q4"],))
+                                                    outputData[model][descriptor]["Q4"]))
+                    gnuBoxOffset += 1
 
 if __name__ == "__main__":
     path = sys.argv[1]
