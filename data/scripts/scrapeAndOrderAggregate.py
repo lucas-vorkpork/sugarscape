@@ -18,10 +18,13 @@ import re
 import json
 from logparseAvg import parseLog
 
-popDescriptors = {"population", "agentWealthCollected", "agentWealthTotal",
+popDescriptors = ("population", "agentWealthCollected", "agentWealthTotal",
                 "environmentWealthCreated", "environmentWealthTotal",
                 "agentStarvationDeaths", "agentMeanTimeToLive",
-                "agentMeanTimeToLiveAgeLimited", "agentReproduced"}
+                "agentMeanTimeToLiveAgeLimited", "agentReproduced")
+
+models = ("benthamHalfLookaheadBinary", "benthamHalfLookaheadTop", "benthamNoLookaheadTop",
+          "egoisticHalfLookaheadTop", "rawSugarscape")
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]
@@ -40,6 +43,8 @@ def parseOptions():
         elif (currArg in ("-d", "--descriptor")):
             returnValues["descriptor"] = currVal
         elif (currArg in ("-m", "--model")):
+            if currVal not in models:
+                raise Exception("Model not recognized")
             returnValues["model"] = currVal
         elif (currArg in ("-h", "--help")):
             printHelp()
@@ -85,6 +90,7 @@ if __name__ == "__main__":
         path = sys.argv[1] + '\\' + filename
         fileDecisionModel = re.compile(r"([A-z]*)\d*\.json")
         decisionModel = re.search(fileDecisionModel, filename).group(1)
+        print(decisionModel)
         if decisionModel == parsedOptions["model"]:
             getListAvgs(path, avgsList, filename)
     filteredAvgs = filterAvgs(avgsList, parsedOptions["descriptor"])

@@ -19,10 +19,13 @@ import re
 import json
 from logparseAvg import parseLog
 
-popDescriptors = {"population", "agentWealthCollected", "agentWealthTotal",
+popDescriptors = ("population", "agentWealthCollected", "agentWealthTotal",
                 "environmentWealthCreated", "environmentWealthTotal",
                 "agentStarvationDeaths", "agentMeanTimeToLive",
-                "agentMeanTimeToLiveAgeLimited", "agentReproduced"}
+                "agentMeanTimeToLiveAgeLimited", "agentReproduced")
+
+models = ("benthamHalfLookaheadBinary", "benthamHalfLookaheadTop", "benthamNoLookaheadTop",
+          "egoisticHalfLookaheadTop", "rawSugarscape")
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]
@@ -42,6 +45,8 @@ def parseOptions():
             returnValues["descriptor"] = currVal
         elif (currArg in ("-m", "--model")):
             returnValues["model"] = currVal
+            if currVal not in models:
+                raise Exception("Model not recognized")
         elif (currArg in ("-t", "--timestep")):
             returnValues["timestep"] = currVal
         elif (currArg in ("-h", "--help")):
