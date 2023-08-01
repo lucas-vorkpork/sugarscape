@@ -22,8 +22,8 @@ popDescriptors = ("population", "meanMetabolism", "meanVision",
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]
-    shortOptions = "l:t:h"
-    longOptions = ("log", "timestep", "help")
+    shortOptions = "l:t:d:h"
+    longOptions = ("log", "timestep", "descriptor", "help")
     returnValues = {}
     try:
         args, vals = getopt.getopt(commandLineArgs, shortOptions, longOptions)
@@ -36,6 +36,10 @@ def parseOptions():
             returnValues["logFile"] = currVal
         elif (currArg in ("-t", "--timestep")):
             returnValues["timestep"] = currVal
+        elif (currArg in ("-d", "--descriptor")):
+            if currVal not in popDescriptors:
+                raise Exception("Unrecognized model descriptor")
+            returnValues["descriptor"] = currVal
         elif (currArg in ("-h", "--help")):
             printHelp()
             exit(0)
@@ -77,16 +81,17 @@ def calcBoxAndWhisker(sortedData):
             outputData[model][descriptor]["Q4"] = sortedData[model][descriptor][setSize]
     return outputData
 
-def logData(outputData, path):
+def logData(outputData, path, desc):
     with open(path, 'w') as file:
         for model in outputData.keys():
             for descriptor in dataList[model].keys():
-                file.write("#{} {}\n".format(model, descriptor))
-                file.write("{} {} {} {} {}\n".format(outputData[model][descriptor]["Q0"],
-                                                   outputData[model][descriptor]["Q1"],
-                                                   outputData[model][descriptor]["Q2"],
-                                                   outputData[model][descriptor]["Q3"],
-                                                   outputData[model][descriptor]["Q4"],))
+                if descriptor == desc:
+                    file.write("#{} {}\n".format(model, descriptor))
+                    file.write("{} {} {} {} {}\n".format(outputData[model][descriptor]["Q0"],
+                                                    outputData[model][descriptor]["Q1"],
+                                                    outputData[model][descriptor]["Q2"],
+                                                    outputData[model][descriptor]["Q3"],
+                                                    outputData[model][descriptor]["Q4"],))
 
 if __name__ == "__main__":
     path = sys.argv[1]
@@ -107,6 +112,6 @@ if __name__ == "__main__":
         populateDataList(dataList, decisionModel, path, parsedOptions["timestep"], filename)
     sortedDataList = sortDataList(dataList)
     outputData = calcBoxAndWhisker(sortedDataList)
-    logData(outputData, parsedOptions["logFile"])
+    logData(outputData, parsedOptions["logFile"], parsedOptions["descriptor"])
     exit(0) 
     
