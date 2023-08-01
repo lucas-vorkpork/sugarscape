@@ -7,6 +7,7 @@
 # Options:
 # -l specifies output for logging
 # -t specify timestep to sort by
+# -d specifies model descriptor to filter by
 # -h print help message
 
 import os

@@ -5,7 +5,7 @@
 
 # Options:
 # -l specifies output for logging
-# -t specify timestep to sort by
+# -d specifies simulation descriptor to filter by
 # -h print help message
 
 import os
@@ -20,8 +20,8 @@ popDescriptors = ("meanPopulation", "meanMetabolism", "meanVision",
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]
-    shortOptions = "l:t:d:h"
-    longOptions = ("log", "timestep", "descriptor", "help")
+    shortOptions = "l:d:h"
+    longOptions = ("log", "descriptor", "help")
     returnValues = {}
     try:
         args, vals = getopt.getopt(commandLineArgs, shortOptions, longOptions)
@@ -32,8 +32,6 @@ def parseOptions():
     for currArg, currVal in args:
         if (currArg in ("-l", "--log")):
             returnValues["logFile"] = currVal
-        elif (currArg in ("-t", "--timestep")):
-            returnValues["timestep"] = currVal
         elif (currArg in ("-d", "--descriptor")):
             if currVal not in popDescriptors:
                 raise Exception("Unrecognized model descriptor")
