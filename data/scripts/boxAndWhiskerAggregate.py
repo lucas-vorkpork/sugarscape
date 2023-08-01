@@ -90,7 +90,7 @@ def logData(outputData, path, desc):
                                                     outputData[model][descriptor]["Q2"],
                                                     outputData[model][descriptor]["Q3"],
                                                     outputData[model][descriptor]["Q4"]))
-                    gnuBoxOffset += 1
+                    gnuBoxOffset += 5
 
 if __name__ == "__main__":
     path = sys.argv[1]

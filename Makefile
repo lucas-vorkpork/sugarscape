@@ -1,8 +1,8 @@
 CLEAN = log.json \
-		data/*.diff \
-		data/*.json \
-		data/*.log \
-		data/*.logs
+		data/scripts/*.diff \
+		data/scripts/*.json \
+		data/scripts/*.log \
+		data/scripts/*.logs
 CONFIG = config.json
 SUGARSCAPE = sugarscape.py
 
@@ -12,10 +12,10 @@ test:
 	python $(SUGARSCAPE) --conf $(CONFIG)
 
 data:
-	cd data && sh collect.sh
+	cd data/scripts && sh collect.sh
 
 generate:
-	cd data && sh generate.sh
+	cd data/scripts && sh generate.sh
 
 clean:
 	rm -rf $(CLEAN) || true

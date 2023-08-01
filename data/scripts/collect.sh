@@ -1,5 +1,7 @@
 #! /bin/bash
 
+cd ..
+cd configs
 files=( benthamNoLookaheadBinary benthamHalfLookaheadBinary benthamNoLookaheadTop benthamHalfLookaheadTop egoisticHalfLookaheadTop rawSugarscape )
 
 # Create working configs to avoid clobbering permanent configs
@@ -9,7 +11,7 @@ do
 done
 
 # Number of seeds to run
-n=100
+n=1
 # Number of decision models to run per seed
 m=${#files[@]}
 for i in $( seq 1 $n )
@@ -26,7 +28,7 @@ do
         # Apply seed to config file
         sed -i $sedstr ./$f.json
         # Run simulation for configs and rename resulting log
-        python ../sugarscape.py --conf $f.json > $f$i.log
+        python ../../sugarscape.py --conf $f.json > $f$i.log
         #python ../logparse.py --log log.json >> $f$i.log
         mv log.json $f$i.json
         j=$((j+1))
