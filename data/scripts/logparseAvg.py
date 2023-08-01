@@ -9,32 +9,16 @@ def parseLog(logFile):
     entries = json.loads(file.read())
     timesteps = -1
 
-
-    data = {"meanPopulation": 0, "meanMetabolism": 0, "meanVision": 0, "meanWealth": 0,
-            "meanAge": 0, "meanTradePrice": 0, "meanTradeVolume": 0, "meanTotalWealth": 0,
-            "meanMaxWealth": 0, "meanMinWealth": 0, "meanAgeAtDeath": 0, "meanDeaths": 0}
-    
-    # data = {"population": 0, "agentWealthCollected": 0, "agentWealthTotal": 0,
-    #         "environmentWealthCreated": 0, "environmentWealthTotal": 0,
-    #         "agentStarvationDeaths": 0, "agentMeanTimeToLive": 0,
-    #         "agentMeanTimeToLiveAgeLimited": 0, "agentReproduced": 0}
+    data = {"population": 0, "agentWealthCollected": 0, "agentWealthTotal": 0,
+            "environmentWealthCreated": 0, "environmentWealthTotal": 0,
+            "agentStarvationDeaths": 0, "agentMeanTimeToLive": 0,
+            "agentMeanTimeToLiveAgeLimited": 0, "agentReproduced": 0}
 
     for entry in entries:
         if entry["timestep"] > timesteps:
             timesteps += 1
-        data["meanPopulation"] += entry["population"]
-        data["meanMetabolism"] += entry["meanMetabolism"]
-        data["meanVision"] += entry["meanVision"]
-        data["meanWealth"] += entry["meanWealth"]
-        data["meanAge"] += entry["meanAge"]
-        data["meanTradePrice"] += entry["meanTradePrice"]
-        data["meanTradeVolume"] += entry["tradeVolume"]
-        data["meanTotalWealth"] += entry["totalWealth"]
-        data["meanMaxWealth"] += entry["maxWealth"]
-        data["meanMinWealth"] += entry["minWealth"]
-        data["meanAgeAtDeath"] += entry["meanAgeAtDeath"]
-        data["meanDeaths"] += entry["deaths"]
-        
+        for desc in data.keys():
+            data[desc] += entry[desc]
     for datum in data:
         data[datum] = round(data[datum] / (1 + timesteps), 2)
     return data
