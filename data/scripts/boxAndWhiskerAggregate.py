@@ -14,14 +14,14 @@ import getopt
 import re
 from logparseAvg import parseLog
 
-popDescriptors = ("population", "meanMetabolism", "meanVision", 
+popDescriptors = ("meanPopulation", "meanMetabolism", "meanVision", 
                   "meanWealth", "giniCoefficient", "tradeVolume", 
                   "maxWealth", "minWealth", "totalWealth")
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]
-    shortOptions = "l:t:h"
-    longOptions = ("log", "timestep", "help")
+    shortOptions = "l:t:d:h"
+    longOptions = ("log", "timestep", "descriptor", "help")
     returnValues = {}
     try:
         args, vals = getopt.getopt(commandLineArgs, shortOptions, longOptions)
@@ -34,6 +34,10 @@ def parseOptions():
             returnValues["logFile"] = currVal
         elif (currArg in ("-t", "--timestep")):
             returnValues["timestep"] = currVal
+        elif (currArg in ("-d", "--descriptor")):
+            if currVal not in popDescriptors:
+                raise Exception("Unrecognized model descriptor")
+            returnValues["descriptor"] = currVal
         elif (currArg in ("-h", "--help")):
             printHelp()
             exit(0)
@@ -42,13 +46,8 @@ def parseOptions():
 def printHelp():
     print("See documentation at top of file")
     
-def populateDataList(dataList, decisionModel, path, timestep, filename):
-    # with open(path, 'r') as file:
-        # entries = json.loads(file.read())
+def populateDataList(dataList, decisionModel, path):
     avgs = parseLog(path)
-    # for avg in entries:
-    #     print("{}: {}".format(avg, entries[avg]))
-    # print(entries)
     for avg in avgs:
         if avg not in dataList[decisionModel].keys():
             dataList[decisionModel][avg] = [avgs[avg]]
@@ -77,16 +76,23 @@ def calcBoxAndWhisker(sortedData):
             outputData[model][descriptor]["Q4"] = sortedData[model][descriptor][setSize]
     return outputData
 
-def logData(outputData, path):
+def logData(outputData, path, desc):
+    gnuBoxOffset = 1
     with open(path, 'w') as file:
+        file.write("#Descritpor: {}\n".format(desc))
+        file.write("Format: name x-offset Q0 Q1 Q2 Q3 Q4 Q5\n\n")
         for model in outputData.keys():
             for descriptor in dataList[model].keys():
-                file.write("{} {} {} {} {} {}\n".format(("{}-{}".format(model, descriptor)),
-                                                        outputData[model][descriptor]["Q0"],
-                                                        outputData[model][descriptor]["Q1"],
-                                                        outputData[model][descriptor]["Q2"],
-                                                        outputData[model][descriptor]["Q3"],
-                                                        outputData[model][descriptor]["Q4"]))
+                if descriptor == desc:
+                    file.write("{} {} {} {} {} {} {}\n".format(
+                                                    model,
+                                                    gnuBoxOffset,
+                                                    outputData[model][descriptor]["Q0"],
+                                                    outputData[model][descriptor]["Q1"],
+                                                    outputData[model][descriptor]["Q2"],
+                                                    outputData[model][descriptor]["Q3"],
+                                                    outputData[model][descriptor]["Q4"]))
+                    gnuBoxOffset += 1
 
 if __name__ == "__main__":
     path = sys.argv[1]
@@ -104,9 +110,9 @@ if __name__ == "__main__":
         decisionModel = re.search(fileDecisionModel, filename).group(1)
         if decisionModel not in dataList.keys():
             dataList[decisionModel] = {}
-        populateDataList(dataList, decisionModel, path, parsedOptions["timestep"], filename)
+        populateDataList(dataList, decisionModel, path)
     sortedDataList = sortDataList(dataList)
     outputData = calcBoxAndWhisker(sortedDataList)
-    logData(outputData, parsedOptions["logFile"])
+    logData(outputData, parsedOptions["logFile"], parsedOptions["descriptor"])
     exit(0) 
     
