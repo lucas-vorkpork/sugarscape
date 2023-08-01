@@ -1,8 +1,8 @@
 CLEAN = log.json \
-		data/scripts/*.diff \
-		data/scripts/*.json \
-		data/scripts/*.log \
-		data/scripts/*.logs
+		data/configs/*.diff \
+		data/configs/*.json \
+		data/configs/*.log \
+		data/configs/*.logs
 CONFIG = config.json
 SUGARSCAPE = sugarscape.py
 
