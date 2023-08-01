@@ -17,9 +17,10 @@ import re
 import json
 from logparseAvg import parseLog
 
-popDescriptors = ("population", "meanMetabolism", "meanVision", 
-                  "meanWealth", "giniCoefficient", "tradeVolume", 
-                  "maxWealth", "minWealth", "totalWealth")
+popDescriptors = {"population", "agentWealthCollected", "agentWealthTotal",
+                "environmentWealthCreated", "environmentWealthTotal",
+                "agentStarvationDeaths", "agentMeanTimeToLive",
+                "agentMeanTimeToLiveAgeLimited", "agentReproduced"}
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]

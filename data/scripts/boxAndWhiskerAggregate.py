@@ -14,9 +14,10 @@ import getopt
 import re
 from logparseAvg import parseLog
 
-popDescriptors = ("meanPopulation", "meanMetabolism", "meanVision", 
-                  "meanWealth", "giniCoefficient", "tradeVolume", 
-                  "maxWealth", "minWealth", "totalWealth")
+popDescriptors = {"population", "agentWealthCollected", "agentWealthTotal",
+                "environmentWealthCreated", "environmentWealthTotal",
+                "agentStarvationDeaths", "agentMeanTimeToLive",
+                "agentMeanTimeToLiveAgeLimited", "agentReproduced"}
 
 def parseOptions():
     commandLineArgs = sys.argv[2:]
