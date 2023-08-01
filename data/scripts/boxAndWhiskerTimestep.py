@@ -50,7 +50,7 @@ def parseOptions():
 def printHelp():
     print("See documentation at top of file")
     
-def populateDataList(dataList, decisionModel, path, timestep, filename):
+def populateDataList(dataList, decisionModel, path, timestep):
     with open(path, 'r') as file:
         entries = json.loads(file.read())
         for entry in entries:
@@ -117,7 +117,7 @@ if __name__ == "__main__":
         decisionModel = re.search(fileDecisionModel, filename).group(1)
         if decisionModel not in dataList.keys():
             dataList[decisionModel] = {}
-        populateDataList(dataList, decisionModel, path, parsedOptions["timestep"], filename)
+        populateDataList(dataList, decisionModel, path, parsedOptions["timestep"])
     sortedDataList = sortDataList(dataList)
     outputData = calcBoxAndWhisker(sortedDataList)
     logData(outputData, parsedOptions["logFile"], parsedOptions["descriptor"])
