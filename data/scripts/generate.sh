@@ -9,7 +9,7 @@ do
     seed=$RANDOM
     sedstr="s/\(\"seed\"\:\s\).*,/\1$seed,/g"
     echo "Generating template with random seed $seed"
-    sed -i $sedstr ./template.json
+    sed -i $sedstr .z/template.json
     cp ./template.json ./$seed.json
 done
 
