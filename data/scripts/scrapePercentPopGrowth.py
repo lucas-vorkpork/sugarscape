@@ -57,23 +57,25 @@ def populateDataList(data, path):
         entries = json.loads(file.read())
         for entry in entries:
             if entry["timestep"] not in data.keys():
-                data[entry["timestep"]] = []
-            data[entry["timestep"]].append(entry["population"])
-
+                data[entry["timestep"]] = {}
+                data[entry["timestep"]]["populations"] = []
+                data[entry["timestep"]]["growth"] = []
+            data[entry["timestep"]]["populations"].append(entry["population"])
+    
 def logData(data, logFile):
     with open(logFile, 'w') as file:
-        for timestep, popDescriptors in data.items():
-            file.write("{} {}\n".format(timestep, popDescriptors[1]))
+        for timestep, val in data.items():
+            file.write("{} {}\n".format(timestep, val["growth"]))
 
 def calcPercentGrowth(data):
     for timestep in data:
         if timestep == 0:
-            data[timestep].append(0)
+            data[timestep]["growth"] = 0
         else:
-            prevPop = data[timestep-1][0]
-            currPop = data[timestep][0]
+            currPop = sum(data[timestep]["populations"])
+            prevPop = sum(data[timestep-1]["populations"])
             percentGrowth = currPop/prevPop - 1
-            data[timestep].append(percentGrowth)
+            data[timestep]["growth"] = percentGrowth
         
 if __name__ == "__main__":
     parsedOptions = parseOptions()
