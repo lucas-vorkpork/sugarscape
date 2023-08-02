@@ -26,7 +26,7 @@ models = ("benthamHalfLookaheadBinary", "benthamHalfLookaheadTop", "benthamNoLoo
 
 def parseOptions():
     commandLineArgs = sys.argv[1:]
-    shortOptions = "l:p:d:h"
+    shortOptions = "l:p:m:h"
     longOptions = ("log", "path", "help")
     returnValues = {}
     try:
@@ -58,11 +58,16 @@ def populateDataList(data, path):
         for entry in entries:
             if entry["timestep"] not in data.keys():
                 data[entry["timestep"]] = []
-            data[entry["timestep"]].append(entry["meanTimeToLive"])
-
+            data[entry["timestep"]].append(entry["agentMeanTimeToLive"])
+    
 def condenseDataList(data):
     for timestep in data.keys():
         data[timestep] = sum(data[timestep])/len(data[timestep])
+
+def logData(data, logFile):
+    with open(logFile, 'w') as file:
+        for timestep, avg in data.items():
+            file.write("{} {}\n".format(timestep, avg))
 
 if __name__ == "__main__":
     parsedOptions = parseOptions()
@@ -78,9 +83,9 @@ if __name__ == "__main__":
         filePath = dirPath + '\\' + filename
         fileDecisionModel = re.compile(r"([A-z]*)\d*\.json")
         decisionModel = re.search(fileDecisionModel, filename).group(1)
-        if fileDecisionModel == parsedOptions["model"]:
+        if decisionModel == parsedOptions["model"]:
             populateDataList(data, filePath)
     condenseDataList(data)
-    print(data)
+    logData(data, parsedOptions["logFile"])
     exit(0) 
     
