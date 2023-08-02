@@ -2,7 +2,7 @@
 #e.g. $ python3 boxAndWhiskerTimestep.py 'C:\Users\willm\Desktop\Github\sugarscape\jsonTest' -l logfile.txt -t 200
  
 # Expected output:
-#Scrapes AgentWealthTotal/EnviromentWealthTotal outputs as tabular 2 column data (timestep wealth)
+#generates 5 quartile information for each decision model's descriptors
 
 # Options:
 # -l specifies output for logging
@@ -57,28 +57,19 @@ def populateDataList(data, path):
         entries = json.loads(file.read())
         for entry in entries:
             if entry["timestep"] not in data.keys():
-                data[entry["timestep"]] = {}
-                data[entry["timestep"]]["agentWealth"] = []
-                data[entry["timestep"]]["environmentWealth"] = []
-            data[entry["timestep"]]["agentWealth"].append(entry["agentWealthTotal"])
-            data[entry["timestep"]]["environmentWealth"].append(entry["environmentWealthTotal"])
-
-
+                data[entry["timestep"]] = []
+            data[entry["timestep"]].append(entry["agentStarvationDeaths"])
+    
 def logData(data, logFile):
     with open(logFile, 'w') as file:
-        for timestep, val in data.items():
-            file.write("{} {}\n".format(timestep, val["wealth"]))
+        for timestep, avg in data.items():
+            file.write("{} {}\n".format(timestep, avg))
+            
+def condenseDataList(data):
+    for timestep in data.keys():
+        data[timestep] = sum(data[timestep])/len(data[timestep])
 
-def calcWealthTotal(data):
-    for timestep in data:
-        if timestep == 0:
-            data[timestep]["wealth"] = 0
-        else:
-            agentWealth = sum(data[timestep]["agentWealth"])/len(data[timestep]["agentWealth"])
-            envrionmentWealth = sum(data[timestep]["environmentWealth"])/len(data[timestep]["environmentWealth"])
-            normalizedWealth = agentWealth/envrionmentWealth
-            data[timestep]["wealth"] = normalizedWealth
-        
+
 if __name__ == "__main__":
     parsedOptions = parseOptions()
     dirPath = parsedOptions["path"]
@@ -95,7 +86,7 @@ if __name__ == "__main__":
         decisionModel = re.search(fileDecisionModel, filename).group(1)
         if decisionModel == parsedOptions["model"]:
             populateDataList(data, filePath)
-    calcWealthTotal(data)
+    condenseDataList(data)
     logData(data, parsedOptions["logFile"])
     exit(0) 
     

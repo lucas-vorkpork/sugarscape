@@ -57,25 +57,27 @@ def populateDataList(data, path):
         entries = json.loads(file.read())
         for entry in entries:
             if entry["timestep"] not in data.keys():
-                data[entry["timestep"]] = []
-            data[entry["timestep"]].append(entry["agentWealthCollected"])
-            data[entry["timestep"]].append(entry["environmentWealthCreated"])
+                data[entry["timestep"]] = {}
+                data[entry["timestep"]]["agentWealth"] = []
+                data[entry["timestep"]]["environmentWealth"] = []
+            data[entry["timestep"]]["agentWealth"].append(entry["agentWealthCollected"])
+            data[entry["timestep"]]["environmentWealth"].append(entry["environmentWealthCreated"])
 
 def logData(data, logFile):
     with open(logFile, 'w') as file:
-        for timestep, popDescriptors in data.items():
-            file.write("{} {}\n".format(timestep, popDescriptors[2]))
+        for timestep, val in data.items():
+            file.write("{} {}\n".format(timestep, val["wealth"]))
 
 def calcWealthTotal(data):
     for timestep in data:
         if timestep == 0:
-            data[timestep].append(0)
+            data[timestep]["wealth"] = 0
         else:
-            agentWealth = data[timestep][0]
-            envrionmentWealth = data[timestep][1]
+            agentWealth = sum(data[timestep]["agentWealth"])/len(data[timestep]["agentWealth"])
+            envrionmentWealth = sum(data[timestep]["environmentWealth"])/len(data[timestep]["environmentWealth"])
             normalizedWealth = agentWealth/envrionmentWealth
-            data[timestep].append(normalizedWealth)
-        
+            data[timestep]["wealth"] = normalizedWealth
+    
 if __name__ == "__main__":
     parsedOptions = parseOptions()
     dirPath = parsedOptions["path"]

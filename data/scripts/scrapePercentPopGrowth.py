@@ -72,9 +72,9 @@ def calcPercentGrowth(data):
         if timestep == 0:
             data[timestep]["growth"] = 0
         else:
-            currPop = sum(data[timestep]["populations"])
-            prevPop = sum(data[timestep-1]["populations"])
-            percentGrowth = currPop/prevPop - 1
+            currAvgPop = sum(data[timestep]["populations"])/len(data[timestep]["populations"])
+            prevAvgPop = sum(data[timestep-1]["populations"])/len(data[timestep-1]["populations"])
+            percentGrowth = currAvgPop/prevAvgPop - 1
             data[timestep]["growth"] = percentGrowth
         
 if __name__ == "__main__":
