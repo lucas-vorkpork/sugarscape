@@ -2,7 +2,7 @@
 #e.g. $ python3 boxAndWhiskerTimestep.py 'C:\Users\willm\Desktop\Github\sugarscape\jsonTest' -l logfile.txt -t 200
  
 # Expected output:
-#Scrapes AgentWealth/EnviromentWealth outputs as tabular 2 column data (timestep wealth)
+#Scrapes AgentWealthTotal/EnviromentWealthTotal outputs as tabular 2 column data (timestep wealth)
 
 # Options:
 # -l specifies output for logging
