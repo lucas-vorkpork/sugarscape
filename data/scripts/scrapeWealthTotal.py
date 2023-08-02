@@ -74,10 +74,14 @@ def calcWealthTotal(data):
         if timestep == 0:
             data[timestep]["wealth"] = 0
         else:
-            agentWealth = sum(data[timestep]["agentWealth"])/len(data[timestep]["agentWealth"])
-            envrionmentWealth = sum(data[timestep]["environmentWealth"])/len(data[timestep]["environmentWealth"])
-            normalizedWealth = agentWealth/envrionmentWealth
+            agentWealthList = list(data[timestep]["agentWealth"])
+            envrionmentWealthList = list(data[timestep]["environmentWealth"])
+            normalizedList = []
+            for i in range(len(agentWealthList)):
+                normalizedList.append(agentWealthList[i]/envrionmentWealthList[i])
+            normalizedWealth = sum(normalizedList)/len(normalizedList)
             data[timestep]["wealth"] = normalizedWealth
+    
         
 if __name__ == "__main__":
     parsedOptions = parseOptions()
