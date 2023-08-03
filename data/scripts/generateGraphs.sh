@@ -1,26 +1,30 @@
 models=( benthamHalfLookaheadBinary benthamHalfLookaheadTop benthamNoLookaheadTop egoisticHalfLookaheadTop rawSugarscape )
 graphs=( meanTimeToLive percentPopGrowth starvationDeaths wealthCollected totalWealth)
 scrapingScripts=( scrapeMeanTimeToLive scrapePercentPopGrowth scrapeStarvationDeaths scrapeWealthCollected scrapeTotalWealth)
-plottingScripts=( )
+plottingScripts=( plotMeanTimeToLive plotPercentPopGrowth plotStarvationDeaths plotWealthCollected plotTotalWealth)
+
 tempDir=$(mktemp -d tempDataDir.XXX)
 cd $tempDir
 absDir=$(pwd)
-for model in "${models[@]}"
+
+for ((index=0; index<${#graphs[@]}; index++)) #iterate over all graphs to be generated
 do
-    mkdir $model
-    cd $model
-    for ((index=0; index<${#graphs[@]}; index++))
+    mkdir ${graphs[$index]}
+    cd ${graphs[$index]}
+    # pwd
+    for ((model=0; model<${#models[@]}; model++)) #iterate over all decision models
     do
-        python3 "../../"${scrapingScripts[$index]}.py -p "../../../../jsonTest" -l ${graphs[$index]}".dat" -m $model
+        # echo ${scrapingScripts[$index]}
+        python3 "../../"${scrapingScripts[$index]}.py -p "../../../../jsonTest" -l ${models[$model]}".dat" -m ${models[$model]}
     done
     cd ..
 done
 cd ../../../plots
 
-for model in "${models[@]}"
+for ((graphIndex=0; graphIndex<"${#graphs[@]}"; graphIndex++))
 do
-    for 
+    gnuplot -c '../data/scripts/'${plottingScripts[$graphIndex]}'.gp' $absDir
 done
 
-
-
+#cleanup temp
+trap "rm -rf $absDir" EXIT
