@@ -15,7 +15,7 @@ do
     for ((model=0; model<${#models[@]}; model++)) #iterate over all decision models
     do
         # echo ${scrapingScripts[$index]}
-        python3 "../../"${scrapingScripts[$index]}.py -p "../../../../jsonTest" -l ${models[$model]}".dat" -m ${models[$model]}
+        python3 "../../"${scrapingScripts[$index]}.py -p "../../../../100-run-json" -l ${models[$model]}".dat" -m ${models[$model]}
     done
     cd ..
 done

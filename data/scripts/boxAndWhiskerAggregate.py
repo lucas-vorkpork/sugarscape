@@ -79,7 +79,7 @@ def logData(outputData, path, desc):
     gnuBoxOffset = 1
     with open(path, 'w') as file:
         file.write("#Descritpor: {}\n".format(desc))
-        file.write("Format: name x-offset Q0 Q1 Q2 Q3 Q4 Q5\n\n")
+        file.write("#Format: name x-offset Q0 Q1 Q2 Q3 Q4 Q5\n\n")
         for model in outputData.keys():
             for descriptor in dataList[model].keys():
                 if descriptor == desc:
