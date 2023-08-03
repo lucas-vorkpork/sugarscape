@@ -4,7 +4,9 @@ CLEAN = log.json \
 		data/configs/*.log \
 		data/configs/*.logs \
 		plots/*.pdf \
-		data/scripts/graphData.???
+		data/scripts/graphData.??? \
+		data/scripts/whiskerData.??? \
+		plots/boxplots
 CONFIG = config.json
 SUGARSCAPE = sugarscape.py
 
@@ -23,7 +25,7 @@ clean:
 	rm -rf $(CLEAN) || true
 
 graphs:
-	cd data/scripts && sh generateGraphs.sh
+	cd data/scripts && sh generateLineGraphs.sh && sh generateWhiskersAggregate.sh
 
 .PHONY: all clean data generate
 
