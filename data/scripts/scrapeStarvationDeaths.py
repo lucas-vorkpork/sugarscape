@@ -62,6 +62,7 @@ def populateDataList(data, path):
     
 def logData(data, logFile):
     with open(logFile, 'w') as file:
+        file.write("#Starvation Deaths\n")
         for timestep, avg in data.items():
             file.write("{} {}\n".format(timestep, avg))
             

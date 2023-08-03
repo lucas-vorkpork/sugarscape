@@ -64,6 +64,7 @@ def populateDataList(data, path):
     
 def logData(data, logFile):
     with open(logFile, 'w') as file:
+        file.write("#Percent pop growth")
         for timestep, val in data.items():
             file.write("{} {}\n".format(timestep, val["growth"]))
 

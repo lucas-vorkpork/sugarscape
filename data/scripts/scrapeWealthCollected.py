@@ -65,6 +65,7 @@ def populateDataList(data, path):
 
 def logData(data, logFile):
     with open(logFile, 'w') as file:
+        file.write("#Wealth Collected\n")
         for timestep, val in data.items():
             file.write("{} {}\n".format(timestep, val["wealth"]))
 

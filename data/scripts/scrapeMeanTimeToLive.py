@@ -66,6 +66,7 @@ def condenseDataList(data):
 
 def logData(data, logFile):
     with open(logFile, 'w') as file:
+        file.write("#mean time to live\n")
         for timestep, avg in data.items():
             file.write("{} {}\n".format(timestep, avg))
 
