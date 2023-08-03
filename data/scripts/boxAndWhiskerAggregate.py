@@ -96,7 +96,6 @@ def logData(outputData, path, desc):
 if __name__ == "__main__":
     path = sys.argv[1]
     if (not os.path.exists(path)):
-        print("Path = {}".format(path))
         raise Exception("Path not recognized")
     encodedDir = os.fsencode(sys.argv[1]) 
     parsedOptions = parseOptions()
