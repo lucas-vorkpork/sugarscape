@@ -87,7 +87,7 @@ if __name__ == "__main__":
         filename = os.fsdecode(file)
         if not filename.endswith('.json'):
             continue
-        path = sys.argv[1] + '\\' + filename
+        path = sys.argv[1] + '/' + filename
         fileDecisionModel = re.compile(r"([A-z]*)\d*\.json")
         decisionModel = re.search(fileDecisionModel, filename).group(1)
         print(decisionModel)
