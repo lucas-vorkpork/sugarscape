@@ -3,7 +3,7 @@ graphs=( meanTimeToLive percentPopGrowth starvationDeaths wealthCollected totalW
 scrapingScripts=( scrapeMeanTimeToLive scrapePercentPopGrowth scrapeStarvationDeaths scrapeWealthCollected scrapeTotalWealth)
 plottingScripts=( plotMeanTimeToLive plotPercentPopGrowth plotStarvationDeaths plotWealthCollected plotTotalWealth)
 
-tempDir=$(mktemp -d tempDataDir.XXX)
+tempDir=$(mktemp -d graphData.XXX)
 cd $tempDir
 absDir=$(pwd)
 
@@ -27,4 +27,4 @@ do
 done
 
 #cleanup temp
-trap "rm -rf $absDir" EXIT
+# trap "rm -rf $absDir" EXIT

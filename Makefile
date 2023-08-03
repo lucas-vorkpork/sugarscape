@@ -2,7 +2,9 @@ CLEAN = log.json \
 		data/configs/*.diff \
 		data/configs/*.json \
 		data/configs/*.log \
-		data/configs/*.logs
+		data/configs/*.logs \
+		plots/*.pdf \
+		data/scripts/graphData.???
 CONFIG = config.json
 SUGARSCAPE = sugarscape.py
 
@@ -19,6 +21,9 @@ generate:
 
 clean:
 	rm -rf $(CLEAN) || true
+
+graphs:
+	cd data/scripts && sh generateGraphs.sh
 
 .PHONY: all clean data generate
 

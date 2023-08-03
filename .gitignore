@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#Files related to graphing
+plots/*.pdf
+.dat
+data/scripts/graphData*/
+data/scripts/*.dat
