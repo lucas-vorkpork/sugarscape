@@ -6,6 +6,9 @@ unset parametric
 set linetype 1 lc rgb "black" lw 2 pt 11
 set xtics rotate by -20
 set xlabel "Decision Models"
+set xrange [-1:23] #Padds plots so they're not crammed
+set xtics nomirror
+set ytics nomirror
 set title ARGV[1]
 set ylabel ARGV[2]
 #change to epdfps for latex

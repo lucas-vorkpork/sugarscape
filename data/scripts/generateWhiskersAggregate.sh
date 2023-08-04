@@ -18,7 +18,24 @@ cd boxPlots
 
 for ((graphIndex=0; graphIndex<"${#descriptors[@]}"; graphIndex++))
 do
-    gnuplot -c '../../data/scripts/plotBoxAndWhisker.gp' ${descriptors[$graphIndex]} 'ylabel' ${descriptors[$graphIndex]} $absDir'/'${descriptors[graphIndex]}'.dat'
+    case ${descriptors[$graphIndex]} in 
+        "agentWealthCollected" | "agentWealthTotal" | "environmentWealthCreated" | "environmentWealthTotal")
+            ylabel="wealth"
+            ;;
+        "agentStarvationDeaths")
+            ylabel="deaths"
+            ;;
+        "agentMeanTimeToLive" | "agentMeanTimeToLiveLimited")
+            ylabel="timesteps"
+            ;;
+        "agentReproduced")
+            ylabel="babies"
+            ;;
+        *)
+            ylabel="weeee"
+            ;;
+        esac
+    gnuplot -c '../../data/scripts/plotBoxAndWhisker.gp' ${descriptors[$graphIndex]} $ylabel ${descriptors[$graphIndex]} $absDir'/'${descriptors[graphIndex]}'.dat'
 done
 
 #cleanup temp
