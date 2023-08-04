@@ -8,8 +8,8 @@ set ytics nomirror
 set term pdf
 set output "wealthCollected.pdf"
 path =ARGV[1].'/wealthCollected/'
-plot path.'benthamHalfLookaheadBinary.dat' with linespoints lt 1 dt 1 pt 0 title 'benthamHalfLookaheadBinary', \
-    path.'benthamHalfLookaheadTop.dat' with linespoints lt 1 dt 2 pt 0 title 'benthamHalfLookaheadTop', \
-    path.'benthamNoLookaheadTop.dat' with linespoints lt 1 dt 3 pt 0 title 'benthamNoLookaheadTop', \
-    path.'egoisticHalfLookaheadTop.dat' with linespoints lt 1 dt 4 pt 0 title 'egoisticHalfLookaheadTop', \
-    path.'rawSugarscape.dat' with linespoints lt 1 dt 5 pt 0 title 'rawSugarscape'
+plot path.'benthamHalfLookaheadBinary.dat' with linespoints pointinterval 100 pointsize 0.75 lt 1 dt 1 pt 0 title 'benthamHalfLookaheadBinary', \
+    path.'benthamHalfLookaheadTop.dat' with linespoints pointinterval 100 pointsize 0.75 lt 1 dt 2 pt 1 title 'benthamHalfLookaheadTop', \
+    path.'benthamNoLookaheadTop.dat' with linespoints pointinterval 100 pointsize 0.75 lt 1 dt 3 pt 2 title 'benthamNoLookaheadTop', \
+    path.'egoisticHalfLookaheadTop.dat' with linespoints pointinterval 100 pointsize 0.75 lt 1 dt 4 pt 3 title 'egoisticHalfLookaheadTop', \
+    path.'rawSugarscape.dat' with linespoints pointinterval 100 pointsize 0.75 lt 1 dt 5 pt 4 title 'rawSugarscape'
