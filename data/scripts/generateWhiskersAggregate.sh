@@ -20,19 +20,19 @@ for ((graphIndex=0; graphIndex<"${#descriptors[@]}"; graphIndex++))
 do
     case ${descriptors[$graphIndex]} in 
         "agentWealthCollected" | "agentWealthTotal" | "environmentWealthCreated" | "environmentWealthTotal")
-            ylabel="wealth"
+            ylabel="Wealth"
             ;;
         "agentStarvationDeaths")
-            ylabel="deaths"
+            ylabel="Deaths"
             ;;
-        "agentMeanTimeToLive" | "agentMeanTimeToLiveLimited")
-            ylabel="timesteps"
+        "agentMeanTimeToLive" | "agentMeanTimeToLiveAgeLimited")
+            ylabel="Timesteps"
             ;;
         "agentReproduced")
-            ylabel="babies"
+            ylabel="Baby-Agents"
             ;;
         *)
-            ylabel="weeee"
+            ylabel="Labelling-Error"
             ;;
         esac
     gnuplot -c '../../data/scripts/plotBoxAndWhisker.gp' ${descriptors[$graphIndex]} $ylabel ${descriptors[$graphIndex]} $absDir'/'${descriptors[graphIndex]}'.dat'
