@@ -11,7 +11,8 @@ class Agent:
         self.born = birthday
         self.cell = cell
         self.debug = cell.environment.sugarscape.debug
-
+        self.universalSugar = configuration["agentUniversalSugar"]
+        self.universalSpice = configuration["agentUniversalSpice"]
         self.sugarMetabolism = configuration["sugarMetabolism"]
         self.spiceMetabolism = configuration["spiceMetabolism"]
         self.movement = configuration["movement"]
@@ -388,8 +389,13 @@ class Agent:
 
     def doTimestep(self, timestep):
         self.timestep = timestep
+        def doUniversalIncome():
+            self.spice += self.universalSpice
+            self.sugar += self.universalSugar
         # Prevent dead or already moved agent from moving
         if self.alive == True and self.cell != None and self.lastMoved != self.timestep:
+            self.sugar = self.universalSugar
+            self.spice = self.universalSpice
             self.lastReproduced = 0
             self.lastSugar = self.sugar
             self.lastSpice = self.spice
@@ -685,6 +691,7 @@ class Agent:
         "sugarMetabolism": [self.sugarMetabolism, mate.sugarMetabolism],
         "sex": [self.sex, mate.sex],
         "tradeFactor": [self.tradeFactor, mate.tradeFactor],
+
         "vision": [self.vision, mate.vision]
         }
         childEndowment = {"seed": self.seed}

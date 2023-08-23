@@ -56,5 +56,7 @@
     "seed": -1,
     "startingAgents": 500,
     "startingDiseases": 50,
-    "timesteps": 200
+    "timesteps": 300,
+    "agentUniversalSugar": [1, 1],
+    "agentUniversalSpice": [1, 1]
 }
