@@ -1,32 +1,48 @@
-CLEAN = log.json \
-		data/configs/*.diff \
-		data/configs/*.json \
-		data/configs/*.log \
-		data/configs/*.logs \
-		plots/*.pdf \
-		data/scripts/graphData.??? \
-		data/scripts/whiskerData.??? \
-		plots/boxplots
 CONFIG = config.json
+DATACHECK = data/data.complete
+PLOTCHECK = plots/plots.complete
+
+DATASET = $(DATACHECK) \
+		data/*[[:digit:]]*.config \
+		data/*.json
+
+PLOTS = $(PLOTCHECK) \
+		plots/*.dat \
+		plots/*.pdf \
+		plots/*.plg
+
+CLEAN = log.json \
+		$(DATASET) \
+		$(PLOTS)
+
+# Change to python3 (or other alias) if needed
+PYTHON = python
+SH = bash
 SUGARSCAPE = sugarscape.py
 
-all: 
+$(DATACHECK):
+	cd data && $(SH) collect.sh
+	touch $(DATACHECK)
+
+$(PLOTCHECK): $(DATACHECK)
+	cd plots && $(SH) make_plots.sh
+	touch $(PLOTCHECK)
+
+all: $(DATACHECK) $(PLOTCHECK)
+
+data: $(DATACHECK)
+
+plots: $(PLOTCHECK)
 
 test:
-	python $(SUGARSCAPE) --conf $(CONFIG)
-
-data:
-	cd data/scripts && sh collect.sh
-
-generate:
-	cd data/scripts && sh generate.sh
+	$(PYTHON) $(SUGARSCAPE) --conf $(CONFIG)
 
 clean:
 	rm -rf $(CLEAN) || true
 
-graphs:
-	cd data/scripts && sh generateLineGraphs.sh && sh generateWhiskersAggregate.sh
+lean:
+	rm -rf $(PLOTS) || true
 
-.PHONY: all clean data generate
+.PHONY: all clean data lean plots
 
 # vim: set noexpandtab tabstop=4:

@@ -50,10 +50,11 @@ class Sugarscape:
         self.end = False # Simulation end flag
         # TODO: Remove redundant metrics
         self.runtimeStats = {"timestep": 0, "population": 0, "meanMetabolism": 0, "meanVision": 0, "meanWealth": 0, "meanAge": 0, "giniCoefficient": 0,
-                             "meanTradePrice": 0, "tradeVolume": 0, "maxWealth": 0, "minWealth": 0, "meanAgeAtDeath": 0,
+                             "meanTradePrice": 0, "tradeVolume": 0, "maxWealth": 0, "minWealth": 0, "meanHappiness": 0, "meanAgeAtDeath": 0,
                              "seed": self.seed, "totalWealthLost": 0, "totalMetabolismCost": 0, "agentReproduced": 0,
                              "agentStarvationDeaths": 0, "agentDiseaseDeaths": 0, "environmentWealthCreated": 0, "agentWealthTotal": 0, "environmentWealthTotal": 0,
-                             "agentWealthCollected": 0, "agentMeanTimeToLive": 0, "agentMeanTimeToLiveAgeLimited": 0}
+                             "agentWealthCollected": 0, "agentWealthBurnRate": 0, "agentMeanTimeToLive": 0, "agentWealths": [],
+                             "agentTimesToLive": [], "agentTimesToLiveAgeLimited": [], "agentTotalMetabolism": 0}
         self.log = open(configuration["logfile"], 'a') if configuration["logfile"] != None else None
         self.logAgent = None
 
@@ -362,7 +363,6 @@ class Sugarscape:
             if currTagLength > maxTagLength:
                 currTagLength = minTagLength
 
-
         randomDiseaseEndowment = {"sugarMetabolismPenalties": sugarMetabolismPenalties,
                      "spiceMetabolismPenalties": spiceMetabolismPenalties,
                      "movementPenalties": movementPenalties,
@@ -422,6 +422,7 @@ class Sugarscape:
         maxFriends = configs["agentMaxFriends"]
         inheritancePolicy = configs["agentInheritancePolicy"]
         ethicalFactor = configs["agentEthicalFactor"]
+        selfishnessFactor = configs["agentSelfishnessFactor"]
         ethicalTheory = configs["agentEthicalTheory"]
         universalSpice = configs["agentUniversalSpice"]
         universalSugar = configs["agentUniversalSugar"]
@@ -429,6 +430,7 @@ class Sugarscape:
         configurations = {"aggressionFactor": {"endowments": [], "curr": aggressionFactor[0], "min": aggressionFactor[0], "max": aggressionFactor[1]},
                           "baseInterestRate": {"endowments": [], "curr": baseInterestRate[0], "min": baseInterestRate[0], "max": baseInterestRate[1]},
                           "ethicalFactor": {"endowments": [], "curr": ethicalFactor[0], "min": ethicalFactor[0], "max": ethicalFactor[1]},
+                          "selfishnessFactor": {"endowments": [], "curr": selfishnessFactor[0], "min": selfishnessFactor[0], "max": selfishnessFactor[1]},
                           "femaleInfertilityAge": {"endowments": [], "curr": femaleInfertilityAge[0], "min": femaleInfertilityAge[0], "max": femaleInfertilityAge[1]},
                           "femaleFertilityAge": {"endowments": [], "curr": femaleFertilityAge[0], "min": femaleFertilityAge[0], "max": femaleFertilityAge[1]},
                           "fertilityFactor": {"endowments": [], "curr": fertilityFactor[0], "min": fertilityFactor[0], "max": fertilityFactor[1]},
@@ -615,9 +617,19 @@ class Sugarscape:
         tradeVolume = 0
         maxWealth = 0
         minWealth = sys.maxsize
+        meanHappiness = 0
         numTraders = 0
         totalWealthLost = 0
         totalMetabolismCost = 0
+
+        # Log per-agent stats every quarter of the total runtime
+        perAgentStatsInterval = self.maxTimestep / 4
+        perAgentStatsCheck = self.timestep % perAgentStatsInterval
+        wealths = []
+        timesToLive = []
+        timesToLiveAgeLimited = []
+        sugarMetabolisms = []
+        spiceMetabolisms = []
 
         environmentWealthCreated = 0
         environmentWealthTotal = 0
@@ -634,31 +646,44 @@ class Sugarscape:
         agentDiseaseDeaths = 0
         agentCombatDeaths = 0
         agentAgingDeaths = 0
+        agentWealthBurnRate = 0
         agentMeanTimeToLive = 0
-        agentMeanTimeToLiveAgeLimited = 0
         agentReproduced = 0
+        agentTotalMetabolism = 0
 
         for agent in self.agents:
+            agentTimeToLive = agent.findTimeToLive()
+            agentTimeToLiveAgeLimited = agent.findTimeToLive(True)
             meanSugarMetabolism += agent.sugarMetabolism
             meanSpiceMetabolism += agent.spiceMetabolism
             meanVision += agent.vision
             meanAge += agent.age
             meanWealth += agent.wealth
+            meanHappiness += agent.happiness
             if agent.tradeVolume > 0:
                 meanTradePrice += max(agent.spicePrice, agent.sugarPrice)
                 tradeVolume += agent.tradeVolume
                 numTraders += 1
             agentWealthTotal += agent.wealth
             agentWealthCollected += agent.wealth - (agent.lastSugar + agent.lastSpice)
-            agentMeanTimeToLive += agent.findTimeToLive()
-            agentMeanTimeToLiveAgeLimited += agent.findTimeToLive(True)
+            agentWealthBurnRate += agentTimeToLive
+            agentMeanTimeToLive += agentTimeToLiveAgeLimited
             agentReproduced += agent.lastReproduced
+            agentTotalMetabolism += agent.sugarMetabolism + agent.spiceMetabolism
 
             if agent.wealth < minWealth:
                 minWealth = agent.wealth
             if agent.wealth > maxWealth:
                 maxWealth = agent.wealth
             totalMetabolismCost += agent.sugarMetabolism + agent.spiceMetabolism
+
+            if perAgentStatsCheck == 0 and self.timestep != 0:
+                wealths.append(agent.wealth)
+                timesToLive.append(agentTimeToLive)
+                timesToLiveAgeLimited.append(agentTimeToLiveAgeLimited)
+                sugarMetabolisms.append(agent.sugarMetabolism)
+                spiceMetabolisms.append(agent.spiceMetabolism)
+
         if numAgents > 0:
             combinedMetabolism = meanSugarMetabolism + meanSpiceMetabolism
             if meanSugarMetabolism > 0 and meanSpiceMetabolism > 0:
@@ -672,8 +697,9 @@ class Sugarscape:
             agentWealthTotal = round(agentWealthTotal, 2)
             minWealth = round(minWealth, 2)
             maxWealth = round(maxWealth, 2)
+            meanHappiness = round(meanHappiness / numAgents, 2)
+            agentWealthBurnRate = round(agentWealthBurnRate / numAgents, 2)
             agentMeanTimeToLive = round(agentMeanTimeToLive / numAgents, 2)
-            agentMeanTimeToLiveAgeLimited = round(agentMeanTimeToLiveAgeLimited / numAgents, 2)
         else:
             meanMetabolism = 0
             meanVision = 0
@@ -681,9 +707,10 @@ class Sugarscape:
             meanWealth = 0
             minWealth = 0
             maxWealth = 0
+            meanHappiness = 0
             tradeVolume = 0
+            agentWealthBurnRate = 0
             agentMeanTimeToLive = 0
-            agentMeanTimeToLiveAgeLimited = 0
 
         numDeadAgents = len(self.deadAgents)
         meanAgeAtDeath = 0
@@ -709,6 +736,7 @@ class Sugarscape:
         self.runtimeStats["meanWealth"] = meanWealth
         self.runtimeStats["minWealth"] = minWealth
         self.runtimeStats["maxWealth"] = maxWealth
+        self.runtimeStats["meanHappiness"] = meanHappiness
         self.runtimeStats["meanTradePrice"] = meanTradePrice
         self.runtimeStats["tradeVolume"] = tradeVolume
         self.runtimeStats["giniCoefficient"] = self.updateGiniCoefficient() if len(self.agents) > 1 else 0
@@ -723,10 +751,15 @@ class Sugarscape:
         self.runtimeStats["agentReproduced"] = agentReproduced
         self.runtimeStats["agentWealthCollected"] = agentWealthCollected
         self.runtimeStats["agentWealthTotal"] = agentWealthTotal
+        self.runtimeStats["agentWealthBurnRate"] = agentWealthBurnRate
         self.runtimeStats["agentMeanTimeToLive"] = agentMeanTimeToLive
-        self.runtimeStats["agentMeanTimeToLiveAgeLimited"] = agentMeanTimeToLiveAgeLimited
         self.runtimeStats["environmentWealthCreated"] = environmentWealthCreated
         self.runtimeStats["environmentWealthTotal"] = environmentWealthTotal
+
+        self.runtimeStats["agentWealths"] = wealths
+        self.runtimeStats["agentTimesToLive"] = timesToLive
+        self.runtimeStats["agentTimesToLiveAgeLimited"] = timesToLiveAgeLimited
+        self.runtimeStats["agentTotalMetabolism"] = agentTotalMetabolism
 
     def writeToLog(self):
         if self.log == None:
@@ -831,6 +864,7 @@ if __name__ == "__main__":
     configuration = {"agentAggressionFactor": [0, 0],
                      "agentBaseInterestRate": [0.0, 0.0],
                      "agentEthicalFactor": [0, 0],
+                     "agentSelfishnessFactor": [-1, -1],
                      "agentEthicalTheory": "none",
                      "agentFemaleInfertilityAge": [0, 0],
                      "agentFemaleFertilityAge": [0, 0],
