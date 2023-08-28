@@ -19,6 +19,7 @@
     "agentMaxFriends": [5, 10],
     "agentMovement": [1, 6],
     "agentReplacements": 0,
+    "agentSelfishnessFactor": [-1, -1],
     "agentSpiceMetabolism": [1, 4],
     "agentStartingSpice": [10, 40],
     "agentStartingSugar": [10, 40],
@@ -26,6 +27,8 @@
     "agentSugarMetabolism": [1, 4],
     "agentTagStringLength": 11,
     "agentTradeFactor": [1, 1],
+    "agentUniversalSpice": [10, 10],
+    "agentUniversalSugar": [10, 10],
     "agentVision": [1, 6],
     "debugMode": ["none"],
     "diseaseAggressionPenalty": [-1, 1],
@@ -36,7 +39,7 @@
     "diseaseTagStringLength": [11, 21],
     "diseaseVisionPenalty": [-1, 1],
     "environmentHeight": 50,
-    "environmentMaxCombatLoot": 1,
+    "environmentMaxCombatLoot": 2,
     "environmentMaxSpice": 4,
     "environmentMaxSugar": 4,
     "environmentMaxTribes": 3,
@@ -54,9 +57,7 @@
     "logfile": "log.json",
     "profileMode": false,
     "seed": -1,
-    "startingAgents": 500,
+    "startingAgents": 250,
     "startingDiseases": 50,
-    "timesteps": 300,
-    "agentUniversalSugar": [1, 1],
-    "agentUniversalSpice": [1, 1]
+    "timesteps": 200
 }
